@@ -88,6 +88,7 @@ def sendMessage(event = None):
         return
 
     elif message == "/bye":
+        sock.send(message.encode())
         sock.close()
         window.quit()
         return
@@ -97,6 +98,9 @@ def sendMessage(event = None):
         inputMessage.set("")
     return 
 
+def on_closing(event=None):
+    inputMessage.set("/bye")
+    sendMessage()
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -109,7 +113,7 @@ inputAddr.grid(row=1,column=1,padx=5,pady=5)
 c_button = tkinter.Button(windowConn, text="접속하기",command=connect)
 c_button.grid(row=1,column=2,padx=5,pady=5)
 
-width = 330
+width = 400
 height = 100
 
 screenWidth = windowConn.winfo_screenwidth()
@@ -138,6 +142,8 @@ inputBox.bind("<Return>",sendMessage)
 inputBox.pack(side=tkinter.LEFT, fill = tkinter.BOTH, expand = tkinter.YES, padx = 5, pady = 5)
 sendButton = tkinter.Button(window, text="전송",command = sendMessage)
 sendButton.pack(side=tkinter.RIGHT, fill = tkinter.X,padx=5,pady=5)
+
+window.protocol("WM_DELETE_WINDOW", on_closing)
 
 thread = Thread(target=recMessage, args=(sock, ))
 thread.daemon = True

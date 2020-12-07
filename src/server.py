@@ -51,7 +51,7 @@ class MyHandler(socketserver.BaseRequestHandler):
 
             while True:
                 msg = self.request.recv(1024)
-                
+                print(msg.decode())
                 if msg.decode()[:3] == '[F]':
                     content = msg.decode()
                     header = content.split('\n')[0]
@@ -69,6 +69,7 @@ class MyHandler(socketserver.BaseRequestHandler):
 
                 elif msg.decode() == "/bye":
                     self.request.close()
+                    self.remove_user(nickname)
                     break
 
                 else:
@@ -80,9 +81,6 @@ class MyHandler(socketserver.BaseRequestHandler):
                 print(e, "*user name :", nickname)
             else:
                 print(e, "*user name : Unknown")
-            self.remove_user(nickname)
-
-        self.remove_user(nickname)
 
             
 class ChatServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
